@@ -58,7 +58,7 @@ import com.bachue.compressmavenplugin.util.ResourcesUtil;
 /**
  * Class with Mojo compress goal
  * @author Alejandro Vivas
- * @version 22/09/2017 0.0.1-SNAPSHOT
+ * @version 27/09/2017 0.0.1-SNAPSHOT
  * @since 22/09/2017 0.0.1-SNAPSHOT
  */
 @Mojo(name = "compress", defaultPhase = LifecyclePhase.COMPILE)
@@ -123,8 +123,23 @@ public class CompressMojo extends AbstractMojo
 			}
 			catch (IOException e)
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new MojoExecutionException("Error to compress files");
+			}
+		}
+		
+		if(getArchives() != null)
+		{
+			for(Archive archive : getArchives()) 
+			{
+				Collection<ResultFile> resultFiles = ResourcesUtil.getFiles(archive.getResources(),getProject(),getLog());
+				try
+				{
+					CompressUtil.createArchive(archive, resultFiles, getLog());
+				}
+				catch (IOException e)
+				{
+					throw new MojoExecutionException("Error to create archive",e);
+				}
 			}
 		}
 	}

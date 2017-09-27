@@ -41,7 +41,7 @@ public class Resource
 	/** Output directory */
 	private String			outputDirectory;
 	/** Output formats */
-	private List<String> formats;
+	private List<CompressFormat> formats;
 
 	/**
 	 * @author Alejandro Vivas
@@ -159,7 +159,7 @@ public class Resource
 	 * @since 25/09/2017 0.0.1-SNAPSHOT
 	 * @param formats the formats to set
 	 */
-	public void setFormats(List<String> formats)
+	public void setFormats(List<CompressFormat> formats)
 	{
 		this.formats = formats;
 	}
@@ -170,7 +170,7 @@ public class Resource
 	 * @since 25/09/2017 0.0.1-SNAPSHOT
 	 * @return the formats
 	 */
-	public List<String> getFormats()
+	public List<CompressFormat> getFormats()
 	{
 		return formats;
 	}

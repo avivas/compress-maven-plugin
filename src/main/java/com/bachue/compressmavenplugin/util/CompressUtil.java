@@ -31,6 +31,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
 
+import org.apache.commons.compress.archivers.ar.ArArchiveEntry;
+import org.apache.commons.compress.archivers.ar.ArArchiveOutputStream;
 import org.apache.commons.compress.compressors.CompressorOutputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.compress.compressors.deflate.DeflateCompressorOutputStream;
@@ -45,6 +47,8 @@ import org.meteogroup.jbrotli.Brotli;
 import org.meteogroup.jbrotli.BrotliStreamCompressor;
 import org.meteogroup.jbrotli.libloader.BrotliLibraryLoader;
 
+import com.bachue.compressmavenplugin.dto.Archive;
+import com.bachue.compressmavenplugin.dto.CompressFormat;
 import com.bachue.compressmavenplugin.dto.ResultFile;
 
 /**
@@ -65,33 +69,96 @@ public final class CompressUtil
 	{
 	}
 
+	/**
+	 * Create a archive
+	 * @author Alejandro Vivas
+	 * @version 27/09/2017 0.0.1-SNAPSHOT
+	 * @since 27/09/2017 0.0.1-SNAPSHOT
+	 * @param archive Archive to create
+	 * @param resultFiles Resultfiles
+	 * @param log maven logger
+	 * @throws IOException If fail operation
+	 */
+	public static void createArchive(Archive archive, Collection<ResultFile> resultFiles, Log log) throws IOException
+	{
+		createAr(archive, resultFiles,log);
+	}
+
+	/**
+	 * Create a ar archive
+	 * @author Alejandro Vivas
+	 * @version 27/09/2017 0.0.1-SNAPSHOT
+	 * @since 27/09/2017 0.0.1-SNAPSHOT
+	 * @param archive Archive to process
+	 * @param resultFiles ResultFiles in Archive
+	 * @param log Maven loger
+	 * @throws IOException If fail to create archive
+	 */
+	public static void createAr(Archive archive, Collection<ResultFile> resultFiles, Log log) throws IOException
+	{
+		ArArchiveOutputStream arArchiveOutputStream = null;
+		try
+		{
+			OutputStream fout = new FileOutputStream(archive.getOutputFile() + ".ar");
+			arArchiveOutputStream = new ArArchiveOutputStream(fout);
+			for (ResultFile resultFile : resultFiles)
+			{
+				ArArchiveEntry entry = new ArArchiveEntry(resultFile.getInputFile().getName(),resultFile.getInputFile().length());//new ArArchiveEntry(resultFile.getInputFile(), resultFile.getInputFile().getName());
+				arArchiveOutputStream.putArchiveEntry(entry);
+				arArchiveOutputStream.write(FileUtil.fileToBytes(resultFile.getInputFile().getAbsolutePath()));
+				arArchiveOutputStream.closeArchiveEntry();
+			}
+		}
+		finally
+		{
+			close(log, arArchiveOutputStream);
+		}
+	}
+
+	/**
+	 * Compress each ResultFile.
+	 * @author Alejandro Vivas
+	 * @version 27/09/2017 0.0.1-SNAPSHOT
+	 * @since 27/09/2017 0.0.1-SNAPSHOT
+	 * @param resultFiles List of ResultFile to compress
+	 * @param log Maven logger
+	 * @throws IOException If fail to compress a file
+	 */
 	public static void compress(Collection<ResultFile> resultFiles, Log log) throws IOException
 	{
 		for (ResultFile resultFile : resultFiles)
 		{
 			long originalSize = resultFile.getInputFile().length();
 			log.info("Starting compress file:[" + resultFile.getInputFile().getAbsolutePath() + "]");
-			for (String format : resultFile.getFormats())
+			for (CompressFormat format : resultFile.getFormats())
 			{
 				log.info("Starting compress in format:[" + format + "]");
 				switch (format)
 				{
-					case "br":
+					case br:
 						compressBrotli(resultFile, log);
 					break;
 
 					default:
-						// Use commons compress 
-						compress(resultFile,format,format,log);
+						// Use commons compress
+						compress(resultFile, format, log);
 					break;
 				}
 				long finalSize = new File(resultFile.getOutputFile() + "." + format).length();
-				log.info("End compress in format:[" + format + "] Original Size:" + originalSize + " Final Size:" + finalSize + " Ratio compression:" + ((float)finalSize/(float)originalSize));
+				log.info("End compress in format:[" + format + "] Original Size:" + originalSize + " Final Size:" + finalSize + " Ratio compression:" + ((float) finalSize / (float) originalSize));
 			}
-
 		}
 	}
 
+	/**
+	 * Compress file with brotli
+	 * @author Alejandro Vivas
+	 * @version 27/09/2017 0.0.1-SNAPSHOT
+	 * @since 27/09/2017 0.0.1-SNAPSHOT
+	 * @param resultFile File to compress
+	 * @param log Maven logger
+	 * @throws IOException
+	 */
 	private static void compressBrotli(ResultFile resultFile, Log log) throws IOException
 	{
 		OutputStream fout = null;
@@ -100,13 +167,13 @@ public final class CompressUtil
 		{
 			File outputFiles = new File(resultFile.getOutputFile().substring(0, resultFile.getOutputFile().lastIndexOf(File.separator) + 1));
 			outputFiles.mkdirs();
-			
+
 			BrotliLibraryLoader.loadBrotli();
 			byte[] inBuf = FileUtil.fileToBytes(resultFile.getInputFile().getAbsolutePath());
 			boolean doFlush = true;
 			streamCompressor = new BrotliStreamCompressor(Brotli.DEFAULT_PARAMETER);
 			byte[] compressed = streamCompressor.compressArray(inBuf, doFlush);
-			fout = new FileOutputStream(resultFile.getOutputFile() + ".br");
+			fout = new FileOutputStream(resultFile.getOutputFile() + CompressFormat.br.getExtension());
 			fout.write(compressed);
 		}
 		finally
@@ -114,8 +181,18 @@ public final class CompressUtil
 			close(log, fout, streamCompressor);
 		}
 	}
-	
-	private static void compress(ResultFile resultFile,String format,String extension,Log log)  throws IOException
+
+	/**
+	 * Compress a file using apache commons compress
+	 * @author Alejandro Vivas
+	 * @version 27/09/2017 0.0.1-SNAPSHOT
+	 * @since 27/09/2017 0.0.1-SNAPSHOT
+	 * @param resultFile Object with result file
+	 * @param format Format to compress
+	 * @param log Maven logger
+	 * @throws IOException If fail to compress file
+	 */
+	private static void compress(ResultFile resultFile, CompressFormat format, Log log) throws IOException
 	{
 		InputStream in = null;
 		OutputStream fout = null;
@@ -125,53 +202,54 @@ public final class CompressUtil
 			in = Files.newInputStream(Paths.get(resultFile.getInputFile().getAbsolutePath()));
 			File outputFiles = new File(resultFile.getOutputFile().substring(0, resultFile.getOutputFile().lastIndexOf(File.separator) + 1));
 			outputFiles.mkdirs();
-			fout = new FileOutputStream(resultFile.getOutputFile() + "." + extension);
-			BufferedOutputStream out = new BufferedOutputStream(fout);;
-						
+			fout = new FileOutputStream(resultFile.getOutputFile() + "." + format.getExtension());
+			BufferedOutputStream out = new BufferedOutputStream(fout);
+
 			switch (format)
 			{
-				case "gz":
+				case gz:
 					compressOutput = new GzipCompressorOutputStream(out);
 				break;
-			
-				case "bzip2":
-					compressOutput = new BZip2CompressorOutputStream(out);	
+
+				case bzip2:
+					compressOutput = new BZip2CompressorOutputStream(out);
 				break;
-					
-				case "pack":
-					compressOutput = new Pack200CompressorOutputStream(out);	
+
+				case pack:
+					compressOutput = new Pack200CompressorOutputStream(out);
 				break;
-				
-				case "xz":
+
+				case xz:
 					compressOutput = new XZCompressorOutputStream(out);
 				break;
-				
-				case "lzma":
+
+				case lzma:
 					compressOutput = new LZMACompressorOutputStream(out);
 				break;
-				
-				case "deflate":
+
+				case deflate:
 					compressOutput = new DeflateCompressorOutputStream(out);
-				break;	
-				
-				case "snappy":
+				break;
+
+				case snappy:
 					compressOutput = new FramedSnappyCompressorOutputStream(out);
 				break;
-				
-				case "lz4":
+
+				case lz4:
 					compressOutput = new FramedLZ4CompressorOutputStream(out);
-				break;	
-				
-				default:
 				break;
-			}			
-			
+
+				default:
+					log.error("Invalid format:" + format);
+				break;
+			}
+
 			int buffersize = 1024;
 			final byte[] buffer = new byte[buffersize];
 			int n = 0;
 			while (-1 != (n = in.read(buffer)))
 			{
-				compressOutput.write(buffer, 0, n);				
+				compressOutput.write(buffer, 0, n);
 			}
 		}
 		finally
@@ -180,6 +258,14 @@ public final class CompressUtil
 		}
 	}
 
+	/**
+	 * Util metethod to close resources.
+	 * @author Alejandro Vivas
+	 * @version 27/09/2017 0.0.1-SNAPSHOT
+	 * @since 27/09/2017 0.0.1-SNAPSHOT
+	 * @param log Maven logger
+	 * @param closeables Objects to close
+	 */
 	private static void close(Log log, Closeable... closeables)
 	{
 		for (Closeable closeable : closeables)
@@ -192,7 +278,7 @@ public final class CompressUtil
 				}
 				catch (Exception e)
 				{
-					log.error("Error cerrando recurso", e);
+					log.error("Error to close a resource", e);
 				}
 			}
 		}

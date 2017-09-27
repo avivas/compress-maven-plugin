@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Class with input file and Output file path without extension file
  * @author Alejandro Vivas
- * @version 25/09/2017 0.0.1-SNAPSHOT
+ * @version 27/09/2017 0.0.1-SNAPSHOT
  * @since 25/09/2017 0.0.1-SNAPSHOT
  */
 public class ResultFile
@@ -36,7 +36,7 @@ public class ResultFile
 	/** Output file */
 	private String			outputFile;
 	/** Output formats */
-	private List<String>	formats;
+	private List<CompressFormat>	formats;
 
 	/**
 	 * Defult constructor
@@ -56,7 +56,7 @@ public class ResultFile
 	 * @param inputFile Input file
 	 * @param outputFile Output file
 	 */
-	public ResultFile(File inputFile, String outputFile,List<String> formats)
+	public ResultFile(File inputFile, String outputFile,List<CompressFormat> formats)
 	{
 		this.inputFile = inputFile;
 		this.outputFile = outputFile;
@@ -109,22 +109,22 @@ public class ResultFile
 
 	/**
 	 * @author Alejandro Vivas
-	 * @version 25/09/2017 0.0.1-SNAPSHOT
+	 * @version 27/09/2017 0.0.1-SNAPSHOT
 	 * @since 25/09/2017 0.0.1-SNAPSHOT
 	 * @param formats the formats to set
 	 */
-	public void setFormats(List<String> formats)
+	public void setFormats(List<CompressFormat> formats)
 	{
 		this.formats = formats;
 	}
 
 	/**
 	 * @author Alejandro Vivas
-	 * @version 25/09/2017 0.0.1-SNAPSHOT
+	 * @version 27/09/2017 0.0.1-SNAPSHOT
 	 * @since 25/09/2017 0.0.1-SNAPSHOT
 	 * @return the formats
 	 */
-	public List<String> getFormats()
+	public List<CompressFormat> getFormats()
 	{
 		return formats;
 	}

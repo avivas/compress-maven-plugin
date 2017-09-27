@@ -104,7 +104,7 @@ public final class ResourcesUtil
 			throw new MojoExecutionException("Invalid resource directory:[" + resourceDirectory +"]");
 		}
 		
-		String outputDirectory = resource.getOutputDirectory().replace('/',File.separatorChar);
+		String outputDirectory = resource.getOutputDirectory() == null ? "" : resource.getOutputDirectory().replace('/',File.separatorChar);
 		log.info("Ouput directory:[" + outputDirectory + "]");
 
 		Collection<ResultFile> files = new ArrayList<>();
