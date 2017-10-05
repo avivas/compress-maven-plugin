@@ -84,7 +84,7 @@ public final class CompressUtil
 	/**
 	 * Create a archive
 	 * @author Alejandro Vivas
-	 * @version 27/09/2017 0.0.1-SNAPSHOT
+	 * @version 05/10/2017 0.0.1-SNAPSHOT
 	 * @since 27/09/2017 0.0.1-SNAPSHOT
 	 * @param archive Archive to create
 	 * @param resultFiles Resultfiles
@@ -93,6 +93,11 @@ public final class CompressUtil
 	 */
 	public static void createArchive(Archive archive, Collection<ResultFile> resultFiles, Log log) throws IOException, MojoExecutionException
 	{
+		if(archive.getFormats() == null)
+		{
+			throw new MojoExecutionException("formats can't be empty");
+		}
+		
 		for (ArchiveFormat format : archive.getFormats())
 		{
 			createArchive(archive, resultFiles, log, format);
@@ -218,7 +223,13 @@ public final class CompressUtil
 		for (ResultFile resultFile : resultFiles)
 		{
 			long originalSize = resultFile.getInputFile().length();
-			log.info("Starting compress file:[" + resultFile.getInputFile().getAbsolutePath() + "]");
+			
+			if(resultFile.getFormats() == null)
+			{
+				throw new MojoExecutionException("formats can't be empty");
+			}
+			
+			log.info("Starting compress file:[" + resultFile.getInputFile().getAbsolutePath() + "]");			
 			for (CompressFormat format : resultFile.getFormats())
 			{
 				log.info("Starting compress in format:[" + format + "]");

@@ -75,34 +75,23 @@ public class CompressMojo extends AbstractMojo
 	@Parameter(property = "archives", required = false)
 	private List<Archive>	archives;
 
-	// TODO Add option taht remove if result file is big
-	
-	// configuration
-
-	// -> resources
-	// ---> resource
-	// -----> includes List<String>
-	// -----> excludes List<String>
-	// -----> extensions List<String> js html
-	// -----> directory Input directory
-	// -----> outputDirectory Output directory
-
-	// -> archives
-	// ---> archive
-	// -----> outputFile String
-	// -----> resources
-	// -------> resource
-	// ---------> includes List<String>
-	// ---------> excludes List<String>
-	// ---------> directory Input directory
-	// ---------> extensions List<String> .js,.html
-
+	/**
+	 * Execute compress goal
+	 * @author Alejandro Vivas
+	 * @version 27/09/2017 0.0.1-SNAPSHOT
+	 * @since 22/09/2017 0.0.1-SNAPSHOT
+	 */
 	public void execute() throws MojoExecutionException
 	{
-		getLog().info("Procesando recursos:" + getResources());
 		processResources();
 	}
 
+	/**
+	 * Process resources
+	 * @author Alejandro Vivas
+	 * @version 27/09/2017 0.0.1-SNAPSHOT
+	 * @since 22/09/2017 0.0.1-SNAPSHOT
+	 */
 	private void processResources() throws MojoExecutionException
 	{
 		if (getResources() != null)
