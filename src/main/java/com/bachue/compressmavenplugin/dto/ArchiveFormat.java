@@ -21,32 +21,33 @@ package com.bachue.compressmavenplugin.dto;
  */
 
 /**
- * Enum with compress formats
+ * Enum with archive formats
  * @author Alejandro Vivas
  * @version 05/10/2017 0.0.1-SNAPSHOT
- * @since 27/09/2017 0.0.1-SNAPSHOT
+ * @since 05/10/2017 0.0.1-SNAPSHOT
  */
-public enum CompressFormat
+public enum ArchiveFormat
 {
-	gz("gz"), bzip2("bz2"), pack("pack"), xz("xz"), lzma("lzma"), deflate("tar"), snappy("sz"), lz4("lz4"),br("br");
+	ar("ar"), cpio("cpio"), tar("tar"), zip("zip"), jar("jar"), sevenz("7z");
 	
 	/** Default extension */
 	private String extension;
 	
 	/**
+	 * Create enum
 	 * @author Alejandro Vivas
-	 * @version 27/09/2017 0.0.1-SNAPSHOT
-	 * @since 27/09/2017 0.0.1-SNAPSHOT
+	 * @version 05/10/2017 0.0.1-SNAPSHOT
+	 * @since 05/10/2017 0.0.1-SNAPSHOT
 	 */
-	private CompressFormat(String extension)
+	private ArchiveFormat(String extension)
 	{
 		this.extension = extension;
 	}
 	
 	/**
 	 * @author Alejandro Vivas
-	 * @version 27/09/2017 0.0.1-SNAPSHOT
-	 * @since 27/09/2017 0.0.1-SNAPSHOT
+	 * @version 05/10/2017 0.0.1-SNAPSHOT
+	 * @since 05/10/2017 0.0.1-SNAPSHOT
 	 * @return the extension
 	 */
 	public String getExtension()

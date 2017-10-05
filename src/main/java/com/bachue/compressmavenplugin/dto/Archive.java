@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Class with archive data
  * @author Alejandro Vivas
- * @version 19/09/2017 0.0.1-SNAPSHOT
+ * @version 05/10/2017 0.0.1-SNAPSHOT
  * @since 19/09/2017 0.0.1-SNAPSHOT
  */
 public class Archive
@@ -35,7 +35,7 @@ public class Archive
 	/** List of resources */
 	private List<Resource>	resources;
 	/** Output formats */
-	private List<String> formats;
+	private List<ArchiveFormat> formats;
 
 	/**
 	 * @author Alejandro Vivas
@@ -83,22 +83,22 @@ public class Archive
 	
 	/**
 	 * @author Alejandro Vivas
-	 * @version 25/09/2017 0.0.1-SNAPSHOT
+	 * @version 05/10/2017 0.0.1-SNAPSHOT
 	 * @since 25/09/2017 0.0.1-SNAPSHOT
 	 * @param formats the formats to set
 	 */
-	public void setFormats(List<String> formats)
+	public void setFormats(List<ArchiveFormat> formats)
 	{
 		this.formats = formats;
 	}
 	
 	/**
 	 * @author Alejandro Vivas
-	 * @version 25/09/2017 0.0.1-SNAPSHOT
+	 * @version 05/10/2017 0.0.1-SNAPSHOT
 	 * @since 25/09/2017 0.0.1-SNAPSHOT
 	 * @return the formats
 	 */
-	public List<String> getFormats()
+	public List<ArchiveFormat> getFormats()
 	{
 		return formats;
 	}
