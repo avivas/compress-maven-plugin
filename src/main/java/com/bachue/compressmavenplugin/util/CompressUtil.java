@@ -212,7 +212,7 @@ public final class CompressUtil
 	/**
 	 * Compress each ResultFile.
 	 * @author Alejandro Vivas
-	 * @version 05/10/2017 0.0.1-SNAPSHOT
+	 * @version 08/01/2018 0.0.1-SNAPSHOT
 	 * @since 27/09/2017 0.0.1-SNAPSHOT
 	 * @param resultFiles List of ResultFile to compress
 	 * @param log Maven logger
@@ -229,10 +229,10 @@ public final class CompressUtil
 				throw new MojoExecutionException("formats can't be empty");
 			}
 			
-			log.info("Starting compress file:[" + resultFile.getInputFile().getAbsolutePath() + "]");			
+			log.debug("Starting compress file:[" + resultFile.getInputFile().getAbsolutePath() + "]");			
 			for (CompressFormat format : resultFile.getFormats())
 			{
-				log.info("Starting compress in format:[" + format + "]");
+				log.debug("Starting compress in format:[" + format + "]");
 				switch (format)
 				{
 					case br:
@@ -245,7 +245,7 @@ public final class CompressUtil
 					break;
 				}
 				long finalSize = new File(resultFile.getOutputFile() + "." + format.getExtension()).length();
-				log.info("End compress in format:[" + format + "] Original Size:" + originalSize + " Final Size:" + finalSize + " Ratio compression:" + ((float) finalSize / (float) originalSize));
+				log.debug("End compress in format:[" + format + "] Original Size:" + originalSize + " Final Size:" + finalSize + " Ratio compression:" + ((float) finalSize / (float) originalSize));
 			}
 		}
 	}

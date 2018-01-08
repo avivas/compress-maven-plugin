@@ -4,7 +4,7 @@ package com.bachue.compressmavenplugin;
  * #%L
  * compress-maven-plugin Maven Plugin
  * %%
- * Copyright (C) 2017 Bachue
+ * Copyright (C) 2017 - 2018 Bachue
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ package com.bachue.compressmavenplugin;
  * #L%
  */
 
-import java.io.File;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -58,7 +58,7 @@ import com.bachue.compressmavenplugin.util.ResourcesUtil;
 /**
  * Class with Mojo compress goal
  * @author Alejandro Vivas
- * @version 27/09/2017 0.0.1-SNAPSHOT
+ * @version 08/01/2018 0.0.1-SNAPSHOT
  * @since 22/09/2017 0.0.1-SNAPSHOT
  */
 @Mojo(name = "compress", defaultPhase = LifecyclePhase.COMPILE)
@@ -89,7 +89,7 @@ public class CompressMojo extends AbstractMojo
 	/**
 	 * Process resources
 	 * @author Alejandro Vivas
-	 * @version 27/09/2017 0.0.1-SNAPSHOT
+	 * @version 08/01/2018 0.0.1-SNAPSHOT
 	 * @since 22/09/2017 0.0.1-SNAPSHOT
 	 */
 	private void processResources() throws MojoExecutionException
@@ -102,8 +102,8 @@ public class CompressMojo extends AbstractMojo
 			while (iterator.hasNext())
 			{
 				ResultFile resultFile = iterator.next();
-				getLog().info("Input file:" +resultFile.getInputFile().getAbsolutePath());
-				getLog().info("output file:" +resultFile.getOutputFile() + "." + (resultFile.getFormats()) );
+				getLog().debug("Input file:" +resultFile.getInputFile().getAbsolutePath());
+				getLog().debug("output file:" +resultFile.getOutputFile() + "." + (resultFile.getFormats()) );
 			}
 			
 			try
@@ -197,12 +197,5 @@ public class CompressMojo extends AbstractMojo
 	public MavenProject getProject()
 	{
 		return project;
-	}
-	
-	public static void main(String[] args)
-	{
-		File f1 = new File("C:\\personal\\desarrollo\\workspaces\\vv\\compress-maven-plugin-test\\src\\main\\javascript\\File.js");
-		File f2 = new File("C:\\personal\\desarrollo\\workspaces\\vv\\compress-maven-plugin-test/src/main/javascript\\File.js");
-		System.out.println(f1.equals(f2));
 	}
 }
